@@ -1,0 +1,205 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 8500,
+      "game_id": 2421,
+      "game_slug": "hearthstone",
+      "name": "Hearthstone",
+      "year": 2014,
+      "user": "Dox",
+      "runner": "wine",
+      "slug": "hearthstone-standard",
+      "version": "Standard",
+      "description": "",
+      "notes": "**CONFIGURE AND INSTALL THE DEPENDENCIES FIRST**\r\nInstructions for Vulkan support: https://github.com/lutris/lutris/wiki/Installing-drivers\r\nInstructions for proper functionality of Battle.Net (+ common problems) https://github.com/lutris/lutris/wiki/Game:-Blizzard-App",
+      "credits": "",
+      "created_at": "2018-06-02T15:27:40.491000Z",
+      "updated_at": "2022-04-15T03:21:13.753969Z",
+      "draft": false,
+      "published": true,
+      "published_by": 1,
+      "rating": "4",
+      "steamid": null,
+      "gogid": null,
+      "gogslug": "",
+      "humbleid": "",
+      "humblestoreid": "",
+      "humblestoreid_real": "",
+      "script": {
+        "files": [
+          {
+            "setup": "http://dist.blizzard.com/downloads/bna-installers/322d5bb9ae0318de3d4cde7641c96425/retail.1/Battle.net-Setup-enUS.exe"
+          },
+          {
+            "hdt": "https://github.com/HearthSim/HDT-Releases/releases/download/v1.17.13/HDT-Installer.exe"
+          }
+        ],
+        "game": {
+          "arch": "win64",
+          "exe": "drive_c/Program Files (x86)/Battle.net/Battle.net.exe",
+          "prefix": "$GAMEDIR"
+        },
+        "installer": [
+          {
+            "task": {
+              "arch": "win64",
+              "description": "Creating 64bit Wine prefix.",
+              "name": "create_prefix",
+              "prefix": "$GAMEDIR"
+            }
+          },
+          {
+            "task": {
+              "app": "arial",
+              "arch": "win64",
+              "description": "Installing Arial font...",
+              "name": "winetricks",
+              "prefix": "$GAMEDIR",
+              "silent": true
+            }
+          },
+          {
+            "task": {
+              "app": "dotnet472",
+              "arch": "win64",
+              "description": "Installing .Net 4.7.2...",
+              "name": "winetricks",
+              "prefix": "$GAMEDIR",
+              "silent": true
+            }
+          },
+          {
+            "task": {
+              "app": "corefonts",
+              "arch": "win64",
+              "description": "Installing CoreFonts...",
+              "name": "winetricks",
+              "prefix": "$GAMEDIR",
+              "silent": true
+            }
+          },
+          {
+            "task": {
+              "app": "nocrashdialog",
+              "arch": "win64",
+              "description": "Enabling NoCrashDialog...",
+              "name": "winetricks",
+              "prefix": "$GAMEDIR",
+              "silent": true
+            }
+          },
+          {
+            "task": {
+              "name": "winekill",
+              "prefix": "$GAMEDIR"
+            }
+          },
+          {
+            "write_json": {
+              "data": {
+                "Client": {
+                  "GameLaunchWindowBehavior": "2",
+                  "GameSearch": {
+                    "BackgroundSearch": "true"
+                  },
+                  "HardwareAcceleration": "false",
+                  "Sound": {
+                    "Enabled": "false"
+                  },
+                  "Streaming": {
+                    "StreamingEnabled": "false"
+                  }
+                }
+              },
+              "description": "Writing a Battle.Net config file",
+              "file": "$GAMEDIR/drive_c/users/$USER/Application Data/Battle.net/Battle.net.config"
+            }
+          },
+          {
+            "write_file": {
+              "content": "hasseennewcinematic=True",
+              "description": "Adding a startup workaround for Hearthstone",
+              "file": "$GAMEDIR/drive_c/users/$USER/Local Settings/Application Data/Blizzard/Hearthstone/options.txt"
+            }
+          },
+          {
+            "task": {
+              "arch": "win64",
+              "description": "Wine Staging: Enabling DXVA2",
+              "key": "backend",
+              "name": "set_regedit",
+              "path": "HKEY_CURRENT_USER\\Software\\Wine\\DXVA2",
+              "prefix": "$GAMEDIR",
+              "value": "va"
+            }
+          },
+          {
+            "task": {
+              "arch": "win64",
+              "description": "Reg fixes for HDT",
+              "key": "DisableHWAcceleration",
+              "name": "set_regedit",
+              "type": "REG_DWORD",
+              "path": "HKEY_CURRENT_USER\\Software\\Microsoft\\Avalon.Graphics",
+              "prefix": "$GAMEDIR",
+              "value": "00000001",
+            }
+          },
+          {
+            "task": {
+              "arch": "win64",
+              "description": "Reg fixes for HDT",
+              "key": "UseTakeFocus",
+              "name": "set_regedit",
+              "path": "HKEY_CURRENT_USER\\Software\\Wine\\X11 Driver",
+              "prefix": "$GAMEDIR",
+              "value": "N"
+            }
+          },
+          {
+            "task": {
+              "name": "winekill",
+              "prefix": "$GAMEDIR"
+            }
+          },
+          {
+            "task": {
+              "arch": "win64",
+              "description": "Installing HDT. An installer will open.\n------------------------------\nTo progress, manually continue installation in that window.",
+              "exclude_processes": "Battle.net.exe Agent.exe \"Battle.net Helper.exe\" wineconsole explorer.exe conhost.exe svchost.exe",
+              "executable": "hdt",
+              "name": "wineexec"
+            }
+          },
+          {
+            "task": {
+              "arch": "win64",
+              "description": "Installing Blizzard App. An installer will open.\n------------------------------\nTo progress, manually continue installation in that window.",
+              "exclude_processes": "Battle.net.exe Agent.exe \"Battle.net Helper.exe\" wineconsole explorer.exe conhost.exe svchost.exe",
+              "executable": "setup",
+              "name": "wineexec"
+            }
+          },
+          {
+            "task": {
+              "name": "winekill",
+              "prefix": "$GAMEDIR"
+            }
+          }
+        ],
+        "system": {
+          "exclude_processes": "Agent.exe \"Battle.net Helper.exe\""
+        },
+        "wine": {
+          "overrides": {
+            "locationapi": "d"
+          }
+        }
+      },
+      "content": "files:\n- setup: http://dist.blizzard.com/downloads/bna-installers/322d5bb9ae0318de3d4cde7641c96425/retail.1/Battle.net-Setup-enUS.exe\n- hdt: https://github.com/HearthSim/HDT-Releases/releases/download/v1.17.13/HDT-Installer.exe\ngame:\n  arch: win64\n  exe: drive_c/Program Files (x86)/Battle.net/Battle.net.exe\n  prefix: $GAMEDIR\ninstaller:\n- task:\n    arch: win64\n    description: Creating 64bit Wine prefix.\n    name: create_prefix\n    prefix: $GAMEDIR\n- task:\n    app: arial\n    arch: win64\n    description: Installing Arial font...\n    name: winetricks\n    prefix: $GAMEDIR\n    silent: true\n- task:\n    app: dotnet472\n    arch: win64\n    description: Installing .Net 4.7.2...\n    name: winetricks\n    prefix: $GAMEDIR\n    silent: true\n- task:\n    app: corefonts\n    arch: win64\n    description: Installing CoreFonts...\n    name: winetricks\n    prefix: $GAMEDIR\n    silent: true\n- task:\n    app: nocrashdialog\n    arch: win64\n    description: Enabling NoCrashDialog...\n    name: winetricks\n    prefix: $GAMEDIR\n    silent: true\n- task:\n    name: winekill\n    prefix: $GAMEDIR\n- write_json:\n    data:\n      Client:\n        GameLaunchWindowBehavior: '2'\n        GameSearch:\n          BackgroundSearch: 'true'\n        HardwareAcceleration: 'false'\n        Sound:\n          Enabled: 'false'\n        Streaming:\n          StreamingEnabled: 'false'\n    description: Writing a Battle.Net config file\n    file: $GAMEDIR/drive_c/users/$USER/Application Data/Battle.net/Battle.net.config\n- write_file:\n    content: hasseennewcinematic=True\n    description: Adding a startup workaround for Hearthstone\n    file: $GAMEDIR/drive_c/users/$USER/Local Settings/Application Data/Blizzard/Hearthstone/options.txt\n- task:\n    arch: win64\n    description: 'Wine Staging: Enabling DXVA2'\n    key: backend\n    name: set_regedit\n    path: HKEY_CURRENT_USER\\Software\\Wine\\DXVA2\n    prefix: $GAMEDIR\n    value: va\n- task:\n    name: winekill\n    prefix: $GAMEDIR\n- task:\n   arch: win64\n    description: 'Installing Blizzard App. An installer will open.\n\n      ------------------------------\n\n      To progress, manually continue installation in that window.'\n   exclude_processes: wineconsole explorer.exe conhost.exe svchost.exe\",\n   executable: hdt\n   name: wineexec\n- task:\n    arch: win64\n    description: 'Installing Blizzard App. An installer will open.\n\n      ------------------------------\n\n      To progress, manually continue installation in that window.'\n    exclude_processes: Battle.net.exe Agent.exe \"Battle.net Helper.exe\" wineconsole\n      explorer.exe conhost.exe svchost.exe\n    executable: setup\n    name: wineexec\n- task:\n    name: winekill\n    prefix: $GAMEDIR\nsystem:\n  exclude_processes: Agent.exe \"Battle.net Helper.exe\"\nwine:\n  overrides:\n    locationapi: d\n"
+    }
+  ]
+}
